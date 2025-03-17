@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.256,
-        "y": 7.071
+        "x": 1.2533783783783772,
+        "y": 7.117567567567567
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.874659090909091,
-        "y": 6.841974431818182
+        "x": 1.8720374692874682,
+        "y": 6.888541999385749
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.579801136363636,
-        "y": 5.575582386363636
+        "x": 3.5533783783783774,
+        "y": 5.408108108108107
       },
       "prevControl": {
-        "x": 3.370397727272727,
-        "y": 6.133991477272727
+        "x": 3.3439749692874683,
+        "y": 5.966517199017198
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.3,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0.5,
-    "rotation": -59.99999999999999
+    "rotation": -59.26451229807993
   },
   "reversed": false,
   "folder": "CS-Reef",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.55617169415675
+    "rotation": -54.51519462184761
   },
   "useDefaultConstraints": true
 }

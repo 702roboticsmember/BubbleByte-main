@@ -103,8 +103,8 @@ public final class Constants {
         public static final double cy = 2.950;
         public static final double dx = 4.050;
         public static final double dy = 2.790;
-        public static final double ex = 5.100;
-        public static final double ey = 2.9;
+        public static final double ex = 5.025;
+        public static final double ey = 2.84;
         public static final double fx = 0;
         public static final double fy = 0;
         public static final double gx = 0;
@@ -255,7 +255,7 @@ public final class Constants {
         public static final double DefaultPose = 0;
 
 
-        public static final double OutPose = 90;
+        public static final double OutPose = 100;
 
         public static final double InPose = -120;
 
@@ -380,21 +380,21 @@ public final class Constants {
         public static final boolean LimitEnable = true;
         public static final double ForwardLimit = 29.8;
         public static final double ReverseLimit = 2;
-        public static final double DefaultPose = 0.5;
-        public static final double L1Pose = 6;
-        public static final double L2Pose = 13.7;
-        public static final double L3Pose = 20.5;
+        public static final double DefaultPose = 0.0;
+        public static final double L1Pose = 5.5;
+        public static final double L2Pose = 13.55;
+        public static final double L3Pose = 20.35;
         public static final double L4Pose = 29.5;
         public static final double GearRatio = 1;//6.88:1
-        public static final double StallSpeed = 0.30;
+        public static final double StallSpeed = 0.34;
         public static final double MaxSpeed = 0.3;
         public static final double MinSpeed = -0.45;
         public static final double ClimbLimit = -1;
         public static final double L0Pose = 5.4;
-        public static final double A1Pose = 7;
-        public static final double A2Pose = 14;
-        public static final double A1Timeout = 1.2;
-        public static final double A2Timeout = 2;
+        public static final double A1Pose = 6.5;
+        public static final double A2Pose = 13.0;
+        public static final double A1Timeout = 0.3;
+        public static final double A2Timeout = 0.6;
 
         public static final double MaxVelocity = 50;
         public static final double MaxAcceleration = 100;
@@ -409,7 +409,7 @@ public final class Constants {
         public static final double ConversionConstant = 0.0;
         public static final InvertedValue MotorInverted = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue MotorMode = NeutralModeValue.Brake;
-        public static final int STATOR_CURRENT_LIMIT = 50;
+        public static final int STATOR_CURRENT_LIMIT = 70;
         public static final int CURRENT_LIMIT = 30;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
@@ -433,7 +433,7 @@ public final class Constants {
         public static final double OuttakeSpeed = -0.3;
         public static final ResetMode Reset = ResetMode.kResetSafeParameters;
         public static final PersistMode Persist = PersistMode.kNoPersistParameters;
-        public static final double IntakeSpeed = -0.38;
+        public static final double IntakeSpeed = -0.36;
         public static final double outtakeTime = 0.5;
     }
     public static final class AlgaeArmConstants{
@@ -450,7 +450,7 @@ public final class Constants {
         public static final double ForwardLimit = 15;
         public static final double ReverseLimit = 1.8;
         public static final double DefaultPose = 1.8;
-        public static final double ReefPose = 4.8;
+        public static final double ReefPose = 7;
         public static final double IntakeSpeed = 0.4;
         public static final double GroundPose = 14.6;//15;//4.8
         public static final double OuttakePose = 3;
@@ -467,11 +467,11 @@ public final class Constants {
     public static final class AlignConstants{
 
         public static final double rightRY = 2;
-        public static final double rightX = -0.11;
+        public static final double rightX = -0.155;
         public static final double rightZ = .52;
 
         public static final double leftRY = 0;
-        public static final double leftX = 0.18;
+        public static final double leftX = 0.195;
         public static final double leftZ = 0.52;
         public static double centerRY = 1;
         public static double centerTX = 0.0;

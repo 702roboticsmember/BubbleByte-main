@@ -138,6 +138,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     return getRaw();
   }
 
+  public void resetHeight(){
+    elevmotor1.setPosition(-0.05);
+  }
+
   
 
   public double getRaw() {

@@ -60,7 +60,7 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton leftstation = new JoystickButton(driver, XboxController.Button.kBack.value);
-    private final JoystickButton rightstation = new JoystickButton(driver, XboxController.Button.kStart.value);
+    private final JoystickButton heightReset = new JoystickButton(driver, XboxController.Button.kStart.value);
     private final JoystickButton fastMode = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton slowMode = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton align = new JoystickButton(driver, XboxController.Button.kX.value);
@@ -82,7 +82,9 @@ public class RobotContainer {
     private final JoystickButton algaeGroundIntake = new JoystickButton(codriver, XboxController.Button.kRightBumper.value);
     private final JoystickButton algaeOuttake = new JoystickButton(codriver, XboxController.Button.kLeftBumper.value);
     //private final JoystickButton back = new JoystickButton(codriver, XboxController.Button.kB.value);
-    
+    private final POVButton alignLeft2 = new POVButton(driver, 270);
+    private final POVButton alignRight2 = new POVButton(driver, 90);
+
 
     private final POVButton L1 = new POVButton(codriver, 90);
     private final POVButton L2 = new POVButton(codriver, 0);
@@ -173,7 +175,7 @@ public class RobotContainer {
     }
 
     public Command AlgaeOn(){
-        return Commands.run(()-> c_CoralIntakeSubsystem.setSpeed(Constants.CoralIntakeConstants.OuttakeSpeed), c_CoralIntakeSubsystem);
+        return Commands.run(()-> a_AlgaeIntakeSubsystem.setSpeed(Constants.AlgaeIntakeConstants.OuttakeSpeed), a_AlgaeIntakeSubsystem);
     }
 
     public Command AlgaeOuttake(){
@@ -181,7 +183,7 @@ public class RobotContainer {
     }
 
     public Command AlgaeOff(){
-        return Commands.run(()-> c_CoralIntakeSubsystem.setSpeed(0), c_CoralIntakeSubsystem);
+        return Commands.run(()-> a_AlgaeIntakeSubsystem.setSpeed(0), a_AlgaeIntakeSubsystem);
     }
     
 
@@ -210,7 +212,7 @@ public class RobotContainer {
     public Command AlgaeStow(){
         return new SequentialCommandGroup(
             new InstantCommand(()->a_AlgaeArmSubsystem.setSpeed(0)),
-            new AlgaeArmPID(a_AlgaeArmSubsystem, Constants.AlgaeArmConstants.DefaultPose)
+            new AlgaeArmPID(a_AlgaeArmSubsystem, Constants.AlgaeArmConstants.DefaultPose - 1.4)
         );
     }
     // public Command AlgaeOuttake(){
@@ -237,6 +239,22 @@ public class RobotContainer {
                         Constants.AlignConstants.leftRY, 
                         s_Swerve); 
     }
+
+    public Command AlignLeft_Driver2(){
+        return new AlignCommand(l_LimelightSubsystem, 
+                        Constants.AlignConstants.leftX - 0.01,
+                        Constants.AlignConstants.leftZ, 
+                        Constants.AlignConstants.leftRY, 
+                        s_Swerve); 
+    }
+
+    public Command AlignRight_Driver2(){
+        return new AlignCommand(l_LimelightSubsystem, 
+                        Constants.AlignConstants.rightX + 0.01,
+                        Constants.AlignConstants.rightZ, 
+                        Constants.AlignConstants.rightRY, 
+                        s_Swerve); 
+                    }
 
     public Command AlignRightOffset_Driver(double xoff, double zoff, double ryoff){
         return new AlignCommand(l_LimelightSubsystem, 
@@ -326,10 +344,10 @@ public class RobotContainer {
     }
 
     public Command A1Deadline(){
-        return Commands.race(
+        return new SequentialCommandGroup(Commands.race(
             Commands.waitUntil(()-> e_ElevatorSubsytem.getElevatorHeight() > Constants.ElevatorConstants.A1Pose - Constants.ElevatorConstants.Tolerance && 
             e_ElevatorSubsytem.getElevatorHeight() < Constants.ElevatorConstants.A1Pose + Constants.ElevatorConstants.Tolerance),
-            new WaitCommand(Constants.ElevatorConstants.A1Timeout));
+            new WaitCommand(Constants.ElevatorConstants.A1Timeout)), new WaitCommand(1));
     }
     public Command A2Deadline(){
         return Commands.race(
@@ -355,6 +373,9 @@ public class RobotContainer {
     }
     public Command L0(){
         return Commands.run(()-> e_ElevatorSubsytem.set(Constants.ElevatorConstants.L0Pose, true), e_ElevatorSubsytem);
+    }
+    public Command L1_5(){
+        return Commands.run(()-> e_ElevatorSubsytem.set(Constants.ElevatorConstants.L3Pose, true), e_ElevatorSubsytem);
     }
 
     public Command A1(){
@@ -427,13 +448,15 @@ public class RobotContainer {
         NamedCommands.registerCommand("CoralOff", CoralOff());
         NamedCommands.registerCommand("CoralIntake", CoralIntake());
         NamedCommands.registerCommand("AlgaeOuttake", AlgaeOuttake());
+        //NamedCommands.registerCommand("AlgaeOn", AlgaeOn());
+        NamedCommands.registerCommand("AlgaeStow", AlgaeStow());
         NamedCommands.registerCommand("Nest", Nest());
         NamedCommands.registerCommand("Cpose", new InstantCommand(()-> s_Swerve.setPoseToReef("c")));
         NamedCommands.registerCommand("Dpose", new InstantCommand(()-> s_Swerve.setPoseToReef("d")));
         NamedCommands.registerCommand("Epose", new InstantCommand(()-> s_Swerve.setPoseToReef("e")));
-        NamedCommands.registerCommand("Jpose", new InstantCommand(()-> s_Swerve.setPoseToReef("c")));
-        NamedCommands.registerCommand("Kpose", new InstantCommand(()-> s_Swerve.setPoseToReef("d")));
-        NamedCommands.registerCommand("Lpose", new InstantCommand(()-> s_Swerve.setPoseToReef("e")));
+        NamedCommands.registerCommand("Jpose", new InstantCommand(()-> s_Swerve.setPoseToReef("j")));
+        NamedCommands.registerCommand("Kpose", new InstantCommand(()-> s_Swerve.setPoseToReef("k")));
+        NamedCommands.registerCommand("Lpose", new InstantCommand(()-> s_Swerve.setPoseToReef("l")));
 
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, 
         ()-> -driver.getRawAxis(1), 
@@ -445,8 +468,8 @@ public class RobotContainer {
 
         
         c_ClimbSubsystem.setDefaultCommand(c_ClimbSubsystem.run(()-> -codriver.getRawAxis(0) * Constants.ClimberConstants.MaxLiftSpeed));
-        c_CoralIntakeSubsystem.setDefaultCommand(c_CoralIntakeSubsystem.run(()-> -codriver.getRawAxis(2)));
-        a_AlgaeIntakeSubsystem.setDefaultCommand(a_AlgaeIntakeSubsystem.run(()-> -codriver.getRawAxis(3)));
+        //c_CoralIntakeSubsystem.setDefaultCommand(a_AlgaeIntakeSubsystem.run(()-> codriver.getRawAxis(2)));
+        a_AlgaeIntakeSubsystem.setDefaultCommand(a_AlgaeIntakeSubsystem.run(()-> -codriver.getRawAxis(3) + codriver.getRawAxis(2)));
         e_ElevatorSubsytem.setDefaultCommand(e_ElevatorSubsytem.run((()-> -codriver.getRawAxis(5) + Constants.ElevatorConstants.StallSpeed )));
         
 
@@ -504,10 +527,12 @@ public class RobotContainer {
         // follow.onFalse(new ParallelCommandGroup(new InstantCommand(()-> l_LimelightSubsystem.setCamMode(0))));
         alignLeft.whileTrue(new ParallelCommandGroup(new InstantCommand(()-> l_LimelightSubsystem.setCamMode(0)), new SequentialCommandGroup( AlignLeft_Driver())));
         alignRight.whileTrue(new ParallelCommandGroup(new InstantCommand(()-> l_LimelightSubsystem.setCamMode(0)), new SequentialCommandGroup( AlignRight_Driver())));
-        //resetpose.onTrue(new InstantCommand(()->field.setRobotPose(0, 0, s_Swerve.getHeading())));
+        alignLeft2.whileTrue(new ParallelCommandGroup(new InstantCommand(()-> l_LimelightSubsystem.setCamMode(0)), new SequentialCommandGroup( AlignLeft_Driver2())));
+        alignRight2.whileTrue(new ParallelCommandGroup(new InstantCommand(()-> l_LimelightSubsystem.setCamMode(0)), new SequentialCommandGroup( AlignRight_Driver2())));
+//resetpose.onTrue(new InstantCommand(()->field.setRobotPose(0, 0, s_Swerve.getHeading())));
         // leftstation.whileTrue(new SequentialCommandGroup(new FollowPath(s_Swerve, "PathTest")));
         // rightstation.whileTrue(new SequentialCommandGroup(new FollowPath(s_Swerve, "PathTest")));
-        
+        heightReset.onTrue(new InstantCommand(()-> e_ElevatorSubsytem.resetHeight()));
 
         /*CoDriver Buttons*/
         
@@ -519,7 +544,7 @@ public class RobotContainer {
         algae2ReefIntake.whileTrue(A2());
         algae2ReefIntake.onFalse(AlgaeStow());
         algaeGroundIntake.whileTrue(AlgaeGroundIntake_coDriver());
-        algaeGroundIntake.onFalse(AlgaeStow());
+        algaeGroundIntake.onFalse(new ParallelCommandGroup(AlgaeStow()));
         algaeOuttake.whileTrue(AlgaeGroundOuttake_coDriver());
         algaeOuttake.onFalse(AlgaeStow());
         // climbOut.whileTrue(ClimbOutPID());

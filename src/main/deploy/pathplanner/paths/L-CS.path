@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.2763636363636366,
-        "y": 7.091264204545454
+        "x": 1.2637387387387375,
+        "y": 7.107207207207207
       },
       "prevControl": {
-        "x": 1.4805354387040615,
-        "y": 6.946598092294601
+        "x": 1.4679105410791624,
+        "y": 6.962541094956354
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,16 +33,16 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.3,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -52.12501634890185
+    "velocity": 0.5,
+    "rotation": -55.0
   },
   "reversed": false,
   "folder": "Reef-CS",
