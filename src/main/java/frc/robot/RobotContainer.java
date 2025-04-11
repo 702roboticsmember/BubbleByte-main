@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -38,6 +39,7 @@ import frc.robot.subsystems.BackLimelightSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Swerve;
 /**
@@ -106,7 +108,7 @@ public class RobotContainer {
     private final LimelightSubsystem l_LimelightSubsystem = new LimelightSubsystem();
     private final BackLimelightSubsystem l_LimelightBackSubsystem = new BackLimelightSubsystem();
     private final Swerve s_Swerve = new Swerve(l_LimelightBackSubsystem, l_LimelightSubsystem);
-    
+    private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
     private final AlgaeArmSubsystem a_AlgaeArmSubsystem = new AlgaeArmSubsystem();
     private final AlgaeIntakeSubsystem a_AlgaeIntakeSubsystem = new AlgaeIntakeSubsystem();
     private final CoralIntakeSubsystem c_CoralIntakeSubsystem = new CoralIntakeSubsystem();
@@ -568,5 +570,9 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(autoChooser.getSelected());
         
+    }
+
+    public Command LEDCommand(){
+        return new InstantCommand(()-> l_LEDSubsystem.setColor(Color.kRed));
     }
 }
