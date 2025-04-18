@@ -459,7 +459,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Jpose", new InstantCommand(()-> s_Swerve.setPoseToReef("j")));
         NamedCommands.registerCommand("Kpose", new InstantCommand(()-> s_Swerve.setPoseToReef("k")));
         NamedCommands.registerCommand("Lpose", new InstantCommand(()-> s_Swerve.setPoseToReef("l")));
-
+        l_LEDSubsystem.DoTheRainbow(false);
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, 
         ()-> -driver.getRawAxis(1), 
         ()-> -driver.getRawAxis(0),
@@ -473,7 +473,7 @@ public class RobotContainer {
         //c_CoralIntakeSubsystem.setDefaultCommand(a_AlgaeIntakeSubsystem.run(()-> codriver.getRawAxis(2)));
         a_AlgaeIntakeSubsystem.setDefaultCommand(a_AlgaeIntakeSubsystem.run(()-> -codriver.getRawAxis(3) + codriver.getRawAxis(2)));
         e_ElevatorSubsytem.setDefaultCommand(e_ElevatorSubsytem.run((()-> -codriver.getRawAxis(5) + Constants.ElevatorConstants.StallSpeed )));
-        
+        l_LEDSubsystem.setDefaultCommand(new InstantCommand(()->l_LEDSubsystem.DoTheRainbow(false), l_LEDSubsystem));
 
         configureButtonBindings();
         
@@ -572,7 +572,4 @@ public class RobotContainer {
         
     }
 
-    public Command LEDCommand(){
-        return new InstantCommand(()-> l_LEDSubsystem.setColor(Color.kRed));
-    }
 }

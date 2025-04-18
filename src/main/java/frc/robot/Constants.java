@@ -357,9 +357,13 @@ public final class Constants {
     public static final class LEDConstants {
 
         public static final int LED_1_PwmID = 6;
-        public static final int LED_1_Length = 0;
-        public static final int LED_2_PwmID = 7;
-        public static final int LED_2_Length = 0;
+        public static final int LED_Length = 100;
+        public static final int LED_1_Length = 14;
+        public static final int LED_2_Length = 14;
+        public static final int LED_3_Length = 36;
+        public static final int LED_4_Length = 36;
+        
+        
         public static final int Q1 = LED_1_Length/4;
         public static final int Q2 = LED_2_Length/4;
         public static final int H1 = LED_1_Length/2;
