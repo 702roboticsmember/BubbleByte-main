@@ -40,23 +40,22 @@ public class LEDSubsystem extends SubsystemBase {
 
    public void bagelbow() {
     
-    LEDScroll(Constants.LEDConstants.LED_1_Length, 0, true, 1);
-    LEDScroll(Constants.LEDConstants.LED_2_Length, Constants.LEDConstants.LED_1_Length, false, 1);
-    LEDScroll(Constants.LEDConstants.LED_3_Length, Constants.LEDConstants.LED_1_Length + Constants.LEDConstants.LED_2_Length, true, 2);
+    LEDScroll(Constants.LEDConstants.LED_1_Length, 0, true);
+    LEDScroll(Constants.LEDConstants.LED_2_Length, Constants.LEDConstants.LED_1_Length, false);
+    LEDScroll(Constants.LEDConstants.LED_3_Length, Constants.LEDConstants.LED_1_Length + Constants.LEDConstants.LED_2_Length, true);
+    LEDScroll(Constants.LEDConstants.LED_4_Length, Constants.LEDConstants.LED_1_Length + Constants.LEDConstants.LED_2_Length + Constants.LEDConstants.LED_3_Length, false);
     m_bagelbow_first_index = (m_bagelbow_first_index + 1);
 
     led1.setData(buffer1);
 
    }
 
-   public void LEDScroll(int length, int start, boolean isForwards, int sections){//technically doesn't actually scroll
+   public void LEDScroll(int length, int start, boolean isForwards){//technically doesn't actually scroll
     if(isForwards){
-      for(int j = 1; j <= sections; j++){
         for(var i = start; i < length/2 + start; i++) {
-          buffer1.setLED((m_bagelbow_first_index%(length/sections) + i) % length/sections + start + (j * length/sections), Color.kBlue);
-          buffer1.setLED((m_bagelbow_first_index%(length/sections) + i + length/(2 *sections)) % length + start, Color.kYellow);
+          buffer1.setLED(((m_bagelbow_first_index%length) + i) % length + start, Color.kBlue);
+          buffer1.setLED(((m_bagelbow_first_index%length) + i + length/2) % length + start, Color.kYellow);
         }
-      }
     }else{
       for(var i = length + start ; i >= length/2 + start; i--) {
         buffer1.setLED((-m_bagelbow_first_index%length + i) % length + start, Color.kBlue);
