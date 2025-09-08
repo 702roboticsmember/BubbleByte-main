@@ -15,16 +15,24 @@ import frc.robot.Constants;
 public class LEDSubsystem extends SubsystemBase {
   /** Creates a new LimitSwitch. */
   private AddressableLED led1 = new AddressableLED(Constants.LEDConstants.LED_1_PwmID);
+<<<<<<< HEAD
   private AddressableLEDBuffer buffer1 = new AddressableLEDBuffer(Constants.LEDConstants.LED_1_Length);
+=======
+  private AddressableLEDBuffer buffer1 = new AddressableLEDBuffer(Constants.LEDConstants.LED_Length);
+>>>>>>> 62bf375cbedb9bb50d6636715e0d0d19daf8a69c
   private int m_rainbowFirstPixelHue = 0;
   private boolean do_the_rainbow = true;
   private int m_bagelbow_first_index = 0;
 
   public LEDSubsystem() {
-    led1.setLength(Constants.LEDConstants.LED_1_Length);
+    led1.setLength(Constants.LEDConstants.LED_Length);
     led1.setData(buffer1);
     led1.start();
+<<<<<<< HEAD
     bagelbow();
+=======
+    
+>>>>>>> 62bf375cbedb9bb50d6636715e0d0d19daf8a69c
   }
   
    public void setColor(Color color) {
@@ -40,6 +48,7 @@ public class LEDSubsystem extends SubsystemBase {
    }
 
    public void bagelbow() {
+<<<<<<< HEAD
     for(var i = 0; i < 7; i++) {
       buffer1.setLED((m_bagelbow_first_index + i) % 14, Color.kBlue);
       buffer1.setLED((m_bagelbow_first_index + i) % 14 + 14, Color.kBlue);
@@ -47,12 +56,36 @@ public class LEDSubsystem extends SubsystemBase {
       buffer1.setLED((m_bagelbow_first_index + i + 7) % 14 + 14, Color.kYellow);
     }
     m_bagelbow_first_index = m_bagelbow_first_index + 1 % 14;
+=======
+    
+    LEDScroll(Constants.LEDConstants.LED_1_Length, 0, true);
+    LEDScroll(Constants.LEDConstants.LED_2_Length, Constants.LEDConstants.LED_1_Length, false);
+    LEDScroll(Constants.LEDConstants.LED_3_Length, Constants.LEDConstants.LED_1_Length + Constants.LEDConstants.LED_2_Length, true);
+    LEDScroll(Constants.LEDConstants.LED_4_Length, Constants.LEDConstants.LED_1_Length + Constants.LEDConstants.LED_2_Length + Constants.LEDConstants.LED_3_Length, false);
+    m_bagelbow_first_index = (m_bagelbow_first_index + 1);
+
+>>>>>>> 62bf375cbedb9bb50d6636715e0d0d19daf8a69c
     led1.setData(buffer1);
 
+   }
+
+   public void LEDScroll(int length, int start, boolean isForwards){//technically doesn't actually scroll
+    if(isForwards){
+        for(var i = start; i < length/2 + start; i++) {
+          buffer1.setLED(((m_bagelbow_first_index%length) + i) % length + start, Color.kBlue);
+          buffer1.setLED(((m_bagelbow_first_index%length) + i + length/2) % length + start, Color.kYellow);
+        }
+    }else{
+      for(var i = length + start ; i >= length/2 + start; i--) {
+        buffer1.setLED((-m_bagelbow_first_index%length + i) % length + start, Color.kBlue);
+        buffer1.setLED((-m_bagelbow_first_index%length + i + length/2) % length + start, Color.kYellow);
+      }
+    }
    }
  
    public void rainbow(){
     // For every pixel
+<<<<<<< HEAD
     for (var i = 0; i < 14; i++) {
       // Calculate the hue - hue is easier for rainbows because the color
       // shape is a circle so only one value needs to precess
@@ -60,7 +93,17 @@ public class LEDSubsystem extends SubsystemBase {
       // Set the value
       buffer1.setHSV(i, hue, 255, 128);
       buffer1.setHSV(i+14, hue, 255, 128);
+=======
+    for (var i = 0; i < Constants.LEDConstants.LED_Length; i++) {
+      // Calculate the hue - hue is easier for rainbows because the color
+      // shape is a circle so only one value needs to precess
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / Constants.LEDConstants.LED_Length)) % 180;
+      // Set the value
+      buffer1.setHSV(i, hue, 255, 128);
+      //buffer1.setHSV(i, hue, 255, 128);
+>>>>>>> 62bf375cbedb9bb50d6636715e0d0d19daf8a69c
     }
+    
     led1.setData(buffer1);
     // Increase by to make the rainbow "move"
     m_rainbowFirstPixelHue += 3;
@@ -72,6 +115,11 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if (do_the_rainbow) {
+<<<<<<< HEAD
+=======
+      rainbow();
+    }else{
+>>>>>>> 62bf375cbedb9bb50d6636715e0d0d19daf8a69c
       bagelbow();
     }
   }
