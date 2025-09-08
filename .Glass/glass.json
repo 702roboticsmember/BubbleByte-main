@@ -1,6 +1,22 @@
 {
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "special": true,
     "transitory": {
+      "CameraPublisher": {
+        "USB Camera 0": {
+          "open": true
+        },
+        "open": true
+      },
+      "LiveWindow": {
+        "open": true
+      },
+      "PathPlanner": {
+        "open": true
+      },
       "SmartDashboard": {
         "open": true
       }
@@ -12,20 +28,6 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/InstantCommand": "Command",
       "/SmartDashboard/Team Chooser": "String Chooser"
-    },
-    "windows": {
-      "/SmartDashboard/Auto Chooser": {
-        "window": {
-          "visible": true
-        }
-      }
     }
-  },
-  "NetworkTables Info": {
-    "visible": true
-  },
-  "NetworkTables Settings": {
-    "mode": "Client (NT4)",
-    "serverTeam": "702"
   }
 }

@@ -3,8 +3,8 @@
   "robotLength": 0.8382,
   "holonomicMode": true,
   "pathFolders": [
-    "CS-Reef",
     "Barge",
+    "CS-Reef",
     "Reef-CS",
     "Start-Reef"
   ],
