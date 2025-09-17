@@ -36,9 +36,9 @@ public class Swerve extends SubsystemBase {
     public AHRS gyro;
     public  RobotConfig config;
     public BackLimelightSubsystem l_LimelightBackSubsystem;
-    public LimelightSubsystem l_LimelightSubsystem;
+    public LimelightSubsystemRight l_LimelightSubsystem;
 
-    public Swerve(BackLimelightSubsystem l_LimelightBackSubsystem, LimelightSubsystem l_LimelightSubsystem) {
+    public Swerve(BackLimelightSubsystem l_LimelightBackSubsystem, LimelightSubsystemRight l_LimelightSubsystem) {
         this.l_LimelightBackSubsystem = l_LimelightBackSubsystem;
         this.l_LimelightSubsystem = l_LimelightSubsystem;
         gyro = new AHRS( NavXComType.kMXP_SPI);

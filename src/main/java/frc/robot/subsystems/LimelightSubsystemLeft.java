@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class LimelightSubsystem extends SubsystemBase {
+public class LimelightSubsystemLeft extends SubsystemBase {
   public NetworkTable table;
   public NetworkTableEntry tx;
   public NetworkTableEntry ty;
@@ -32,7 +32,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public NetworkTableEntry botpose_orb;
 
   /** Creates a new LimelightSubsystem. */
-  public LimelightSubsystem() {
+  public LimelightSubsystemLeft() {
     table = NetworkTableInstance.getDefault().getTable("limelight-front");
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");

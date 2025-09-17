@@ -36,7 +36,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.LimelightSubsystemRight;
 import frc.robot.subsystems.Swerve;
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -101,7 +101,7 @@ public class RobotContainer {
     //private static final Orchestra orchestra = new Orchestra("mario.chrp");
 
     /* Subsystems */
-    private final LimelightSubsystem l_LimelightSubsystem = new LimelightSubsystem();
+    private final LimelightSubsystemRight l_LimelightSubsystem = new LimelightSubsystemRight();
     private final BackLimelightSubsystem l_LimelightBackSubsystem = new BackLimelightSubsystem();
     private final Swerve s_Swerve = new Swerve(l_LimelightBackSubsystem, l_LimelightSubsystem);
     private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
