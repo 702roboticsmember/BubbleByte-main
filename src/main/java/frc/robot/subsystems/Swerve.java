@@ -31,6 +31,7 @@ import frc.robot.SwerveModule;
 public class Swerve extends SubsystemBase {
     
     public SwerveDriveOdometry swerveOdometry;
+    public SwerveDriveOdometry AlignOdometry;
     
     public SwerveModule[] swerveModules;
     public AHRS gyro;
@@ -63,7 +64,7 @@ public class Swerve extends SubsystemBase {
         
     
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions());
-        
+        AlignOdometry = new SwerveDriveOdometry(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions());
 
         AutoBuilder.configure(
             this::getPose, // Robot pose supplier
@@ -127,6 +128,16 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    public void move(ChassisSpeeds chassisSpeedsspeed, boolean isOpenLoop) {
+        SwerveModuleState[] swerveModuleStates = Constants.Swerve.KINEMATICS.toSwerveModuleStates(chassisSpeedsspeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.MAX_SPEED);
+
+        for (SwerveModule mod : swerveModules) {
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], false);
+        }
+    }
+
+
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.MAX_SPEED);
@@ -156,8 +167,16 @@ public class Swerve extends SubsystemBase {
         return swerveOdometry.getPoseMeters();
     }
 
+    public Pose2d getAlignPose() {
+        return AlignOdometry.getPoseMeters();
+    }
+
     public void setPose(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
+    }
+
+    public void setAlignPose(Pose2d pose) {
+        AlignOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
     public Rotation2d getHeading() {
