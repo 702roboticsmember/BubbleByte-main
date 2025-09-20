@@ -12,7 +12,10 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
+import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 
 //might be removed idk just putting this here
 
@@ -24,6 +27,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
@@ -34,6 +38,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   ClimbSubsystem c_ClimbSubsystem;
   public TalonFX elevmotor1 = new TalonFX(Constants.ElevatorConstants.Motor1ID);
   public TalonFX elevmotor2 = new TalonFX(Constants.ElevatorConstants.Motor2ID);
+  public DigitalInput sensor = new DigitalInput(6);
 
   
       
@@ -41,6 +46,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorSubsystem(ClimbSubsystem c_ClimbSubsystem) {
     this.c_ClimbSubsystem = c_ClimbSubsystem;
     m_request.OverrideBrakeDurNeutral = true;
+    
     //m_requestV.OverrideBrakeDurNeutral = true;
     
     
@@ -57,6 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     var motorConfigs = talonFXConfigs.MotorOutput;
 
     var limitConfigs = talonFXConfigs.SoftwareLimitSwitch;
+    //var hlimitConfigs = talonFXConfigs.HardwareLimitSwitch;
 // set slot 0 gains
     var slot0Configs = talonFXConfigs.Slot0;
     slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
@@ -82,6 +89,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     limitConfigs.ReverseSoftLimitThreshold = Constants.ElevatorConstants.ReverseLimit;
     limitConfigs.ReverseSoftLimitEnable = Constants.ElevatorConstants.LimitEnable;
+
+    
+
     
     
 
@@ -93,15 +103,24 @@ public class ElevatorSubsystem extends SubsystemBase {
     motorConfigs.Inverted = Constants.ElevatorConstants.MotorInverted;
     motorConfigs.NeutralMode = Constants.ElevatorConstants.MotorMode;
 
+   
+
     
     elevmotor1.getConfigurator().apply(currentConfigs);
     elevmotor2.getConfigurator().apply(currentConfigs);
     elevmotor1.getConfigurator().apply(motorConfigs);
     elevmotor2.getConfigurator().apply(motorConfigs);
-    // elevmotor1.getConfigurator().apply(limitConfigs);
-    // elevmotor2.getConfigurator().apply(limitConfigs);
+    elevmotor1.getConfigurator().apply(limitConfigs);
+    elevmotor2.getConfigurator().apply(limitConfigs);
+    
+    //elevmotor2.getConfigurator().apply(limitConfigs2);
+    //elevmotor2.getConfigurator().apply(feedbackConfigs2);
     elevmotor1.getConfigurator().apply(talonFXConfigs);
     elevmotor2.getConfigurator().apply(talonFXConfigs);
+
+    
+    
+    //elevmotor2.getConfigurator().apply(talonFXConfigs2.Feedback);
     
     //elevmotor1.config_kP(0, Constants.kElevatorP, Constants.TimeoutMs);
     //elevmotor1.config_kI(0, Constants.kElevatorI, Constants.TimeoutMs);
@@ -207,6 +226,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    elevmotor2.setPosition(elevmotor1.getPosition().getValueAsDouble());
+    if(!sensor.get())elevmotor1.setPosition(0);
+    SmartDashboard.putBoolean("sensor", sensor.get());
     SmartDashboard.putNumber("Elevator Height", getElevatorHeight());
     SmartDashboard.putNumber("ElevatorHeight2", elevmotor2.getPosition().getValueAsDouble());
     
