@@ -9,41 +9,40 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import java.util.function.DoubleSupplier;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.*;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class CoralIntakeSubsystem extends SubsystemBase {
-  private SparkMax leftMotor = new SparkMax(Constants.CoralIntakeConstants.LeftMotorID, MotorType.kBrushless);
-  private SparkMax rightMotor = new SparkMax(Constants.CoralIntakeConstants.RightMotorID, MotorType.kBrushless);
+  // private SparkMax leftMotor = new SparkMax(Constants.CoralIntakeConstants.LeftMotorID, MotorType.kBrushless);
+  // private SparkMax rightMotor = new SparkMax(Constants.CoralIntakeConstants.RightMotorID, MotorType.kBrushless);
   // private Spark LeftMotor = new Spark(Constants.CoralIntakeConstants.LeftMotorID);
   // private Spark RightMotor = new Spark(Constants.CoralIntakeConstants.RightMotorID);
+  private TalonFX Motor = new TalonFX(Constants.CoralIntakeConstants.MotorID);
   private DigitalInput sensor = new DigitalInput(Constants.LIMIT_SWITCH_INTAKE);
+  
   /** Creates a new ClimbSubsystem. */
   public CoralIntakeSubsystem() {
-    SparkMaxConfig leftConfig = new SparkMaxConfig();
-    SparkMaxConfig rightConfig = new SparkMaxConfig();
+    // SparkMaxConfig leftConfig = new SparkMaxConfig();
+    // SparkMaxConfig rightConfig = new SparkMaxConfig();
     
 
-    leftConfig.inverted(Constants.CoralIntakeConstants.LeftMotorInverted);
-    rightConfig.inverted(Constants.CoralIntakeConstants.RightMotorInverted);
+    // leftConfig.inverted(Constants.CoralIntakeConstants.LeftMotorInverted);
+    // rightConfig.inverted(Constants.CoralIntakeConstants.RightMotorInverted);
     
-    leftConfig.smartCurrentLimit(20);
-    rightConfig.smartCurrentLimit(20);
-    leftConfig.idleMode(IdleMode.kBrake);
-    rightConfig.idleMode(IdleMode.kBrake);
+    // leftConfig.smartCurrentLimit(20);
+    // rightConfig.smartCurrentLimit(20);
+    // leftConfig.idleMode(IdleMode.kBrake);
+    // rightConfig.idleMode(IdleMode.kBrake);
     //leftConfig.voltageCompensation(0);
     
-    leftMotor.configure(leftConfig, Constants.CoralIntakeConstants.Reset, Constants.CoralIntakeConstants.Persist);
-    rightMotor.configure(rightConfig, Constants.CoralIntakeConstants.Reset, Constants.CoralIntakeConstants.Persist);
+    // leftMotor.configure(leftConfig, Constants.CoralIntakeConstants.Reset, Constants.CoralIntakeConstants.Persist);
+    // rightMotor.configure(rightConfig, Constants.CoralIntakeConstants.Reset, Constants.CoralIntakeConstants.Persist);
    
     
 
@@ -58,6 +57,27 @@ public class CoralIntakeSubsystem extends SubsystemBase {
     // talonFXConfigurator.apply(configs);
 
     // Ive searched for a while but couldnt find any way to currnet limit sparks
+
+    var talonFXConfigs = new TalonFXConfiguration();
+
+    var currentConfigs = talonFXConfigs.CurrentLimits;
+    var motorConfigs = talonFXConfigs.MotorOutput;
+
+    // var limitConfigs = talonFXConfigs.SoftwareLimitSwitch;
+
+    currentConfigs.StatorCurrentLimit = Constants.CoralIntakeConstants.STATOR_CURRENT_LIMIT;
+    currentConfigs.StatorCurrentLimitEnable = Constants.CoralIntakeConstants.ENABLE_STATOR_CURRENT_LIMIT;
+    currentConfigs.SupplyCurrentLimit = Constants.CoralIntakeConstants.CURRENT_LIMIT;
+    currentConfigs.SupplyCurrentLimitEnable = Constants.CoralIntakeConstants.ENABLE_CURRENT_LIMIT;
+
+    motorConfigs.Inverted = Constants.CoralIntakeConstants.MotorInverted;
+    motorConfigs.NeutralMode = Constants.CoralIntakeConstants.MotorMode;
+
+    Motor.getConfigurator().apply(motorConfigs);
+    Motor.getConfigurator().apply(currentConfigs);
+
+
+
   }
 
   @Override
@@ -83,8 +103,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
   }
 
   public void setSpeed(double speed) {
-    leftMotor.set(speed);
-    rightMotor.set(speed);
+    Motor.set(speed);
   }
 
   public Command run(DoubleSupplier input){

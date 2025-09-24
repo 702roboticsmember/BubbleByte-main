@@ -2,15 +2,13 @@ package frc.robot;
 
 import static frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500;
 
-
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 
 //import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 //import com.pathplanner.lib.util.PIDConstants;
@@ -19,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Time;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios;
 import frc.lib.util.SwerveModuleConstants;
@@ -379,9 +376,17 @@ public final class Constants {
         public static final int CURRENT_THRESHOLD = 30;
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final double Radius = 1;
-        public static final double kP = 0.2;
-        public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kS = 0.25; // Add 0.25 V output to overcome static friction
+        public static final double kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+        public static final double kA = 0.007; // An acceleration of 1 rps/s requires 0.01 V output
+        public static final double kP = 0.95; // An error of 1 rps results in 0.11 V output
+        public static final double kI = 0; // no output for integrated error
+        public static final double kD = 0.0;
+        public static final double kG = 1.07;
+        public static final GravityTypeValue GravityType = GravityTypeValue.Elevator_Static;
+        public static final double MaxVelocity = 50;
+        public static final double MaxAcceleration = 100;
+
         public static final double Tolerance = 0.2;
         public static final boolean LimitEnable = true;
         public static final double ForwardLimit = 29.8;
@@ -402,8 +407,7 @@ public final class Constants {
         public static final double A1Timeout = 0.3;
         public static final double A2Timeout = 0.6;
 
-        public static final double MaxVelocity = 50;
-        public static final double MaxAcceleration = 100;
+        
         public static final double L4Timeout = 2.1;
         public static final double L3Timeout = 1.7;
         public static final double L2Timeout = 1.1;
@@ -426,19 +430,17 @@ public final class Constants {
     }
     public static final class CoralIntakeConstants {
 
-        public static final int LeftMotorID = 17;
-        public static final int RightMotorID = 18;
+        public static final int MotorID = 0;
         public static final double ConversionConstant = 0.0;
-        public static final boolean LeftMotorInverted = true;
-        public static final boolean RightMotorInverted = false;
+        public static final InvertedValue MotorInverted = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue MotorMode = NeutralModeValue.Brake;
         public static final int STATOR_CURRENT_LIMIT = 35;
         public static final int CURRENT_LIMIT = 30;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
         public static final double OuttakeSpeed = -0.3;
-        public static final ResetMode Reset = ResetMode.kResetSafeParameters;
-        public static final PersistMode Persist = PersistMode.kNoPersistParameters;
+        // public static final ResetMode Reset = ResetMode.kResetSafeParameters;
+        // public static final PersistMode Persist = PersistMode.kNoPersistParameters;
         public static final double IntakeSpeed = -0.36;
         public static final double outtakeTime = 0.5;
     }

@@ -3,19 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
-import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 
 //might be removed idk just putting this here
 
@@ -66,14 +57,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     //var hlimitConfigs = talonFXConfigs.HardwareLimitSwitch;
 // set slot 0 gains
     var slot0Configs = talonFXConfigs.Slot0;
-    slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kA = 0.007; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = 0.95; // An error of 1 rps results in 0.11 V output
-    slot0Configs.kI = 0; // no output for integrated error
-    slot0Configs.kD = 0.0;
-    slot0Configs.kG = 1.07;
-    slot0Configs.GravityType = GravityTypeValue.Elevator_Static; // no output for error derivative
+    slot0Configs.kS = Constants.ElevatorConstants.kS; // Add 0.25 V output to overcome static friction
+    slot0Configs.kV = Constants.ElevatorConstants.kV; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kA = Constants.ElevatorConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0Configs.kP = Constants.ElevatorConstants.kP; // An error of 1 rps results in 0.11 V output
+    slot0Configs.kI = Constants.ElevatorConstants.kI; // no output for integrated error
+    slot0Configs.kD = Constants.ElevatorConstants.kD;
+    slot0Configs.kG = Constants.ElevatorConstants.kG;
+    slot0Configs.GravityType = Constants.ElevatorConstants.GravityType; // no output for error derivative
     // slot0Configs.kG = 0;
     // slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
 
