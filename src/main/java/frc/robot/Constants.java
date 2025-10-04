@@ -369,8 +369,8 @@ public final class Constants {
         public static final double ConversionConstant = 0.0;
         public static final InvertedValue MotorInverted = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue MotorMode = NeutralModeValue.Brake;
-        public static final int STATOR_CURRENT_LIMIT = 70;
-        public static final int CURRENT_LIMIT = 60;
+        public static final int STATOR_CURRENT_LIMIT = 80;
+        public static final int CURRENT_LIMIT = 70;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
         public static final int CURRENT_THRESHOLD = 30;
@@ -378,24 +378,24 @@ public final class Constants {
         public static final double Radius = 1;
         public static final double kS = 0.25; // Add 0.25 V output to overcome static friction
         public static final double kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-        public static final double kA = 0.007; // An acceleration of 1 rps/s requires 0.01 V output
-        public static final double kP = 0.95; // An error of 1 rps results in 0.11 V output
+        public static final double kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+        public static final double kP = 3; // An error of 1 rps results in 0.11 V output
         public static final double kI = 0; // no output for integrated error
         public static final double kD = 0.0;
         public static final double kG = 1.07;
         public static final GravityTypeValue GravityType = GravityTypeValue.Elevator_Static;
-        public static final double MaxVelocity = 50;
-        public static final double MaxAcceleration = 100;
+        public static final double MaxVelocity = 100;
+        public static final double MaxAcceleration = 250;
 
         public static final double Tolerance = 0.2;
         public static final boolean LimitEnable = true;
-        public static final double ForwardLimit = 29.8;
-        public static final double ReverseLimit = 2;
+        public static final double ForwardLimit = 29.5;
+        public static final double ReverseLimit = 0.5;
         public static final double DefaultPose = 0.0;
         public static final double L1Pose = 5.5;
         public static final double L2Pose = 13.55;
         public static final double L3Pose = 20.35;
-        public static final double L4Pose = 29.5;
+        public static final double L4Pose = 27.2;
         public static final double GearRatio = 1;//6.88:1
         public static final double StallSpeed = 0.34;
         public static final double MaxSpeed = 0.3;
@@ -413,65 +413,24 @@ public final class Constants {
         public static final double L2Timeout = 1.1;
         public static final double L1Timeout = 1;
     }
-    public static final class AlgaeIntakeConstants{
+    
+    public static final class CoralIntakeConstants {
 
         public static final int MotorID = 16;
         public static final double ConversionConstant = 0.0;
         public static final InvertedValue MotorInverted = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue MotorMode = NeutralModeValue.Brake;
-        public static final int STATOR_CURRENT_LIMIT = 70;
-        public static final int CURRENT_LIMIT = 30;
+        public static final int STATOR_CURRENT_LIMIT = 200;
+        public static final int CURRENT_LIMIT = 100;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
-        public static final double IntakeSpeed = 0.3;
-        public static final double OuttakeSpeed = -0.5;
-        public static final double MinSpeed = -0.5;
-        public static final double MaxSpeed = 0.5;
-    }
-    public static final class CoralIntakeConstants {
-
-        public static final int MotorID = 0;
-        public static final double ConversionConstant = 0.0;
-        public static final InvertedValue MotorInverted = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue MotorMode = NeutralModeValue.Brake;
-        public static final int STATOR_CURRENT_LIMIT = 35;
-        public static final int CURRENT_LIMIT = 30;
-        public static final boolean ENABLE_CURRENT_LIMIT = true;
-        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
-        public static final double OuttakeSpeed = -0.3;
+        public static final double OuttakeSpeed = 0.3;
         // public static final ResetMode Reset = ResetMode.kResetSafeParameters;
         // public static final PersistMode Persist = PersistMode.kNoPersistParameters;
-        public static final double IntakeSpeed = -0.36;
+        public static final double IntakeSpeed = 0.36;
         public static final double outtakeTime = 0.5;
     }
-    public static final class AlgaeArmConstants{
-
-        public static final int MotorID = 19;
-        public static final InvertedValue MotorInverted = InvertedValue.CounterClockwise_Positive;
-        public static final NeutralModeValue MotorMode = NeutralModeValue.Brake;
-        public static final double EncoderConversion = 1;
-        public static final int STATOR_CURRENT_LIMIT = 35;
-        public static final int CURRENT_LIMIT = 30;
-        public static final boolean ENABLE_CURRENT_LIMIT = true;
-        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
-        public static final boolean LimitEnable = true;
-        public static final double ForwardLimit = 15;
-        public static final double ReverseLimit = 1.8;
-        public static final double DefaultPose = 1.8;
-        public static final double ReefPose = 7;
-        public static final double IntakeSpeed = 0.4;
-        public static final double GroundPose = 14.6;//15;//4.8
-        public static final double OuttakePose = 3;
-        public static final double OuttakeSpeed = 0.5;
-        public static final double GearRatio = 1/50;
-        public static final double GroundOuttakePose = 14;//14;
-        public static final double Tolerance = 0.03;
-        public static final double timeout = 0.8;
-        public static double kP = 0.042;
-        public static double kI = 0.0;
-        public static double kD = 0.0;
-        
-    }
+    
     public static final class AlignConstants{
 
         public static final double rightRY = 2;

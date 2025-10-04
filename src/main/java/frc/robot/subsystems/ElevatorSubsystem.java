@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -29,7 +30,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   ClimbSubsystem c_ClimbSubsystem;
   public TalonFX elevmotor1 = new TalonFX(Constants.ElevatorConstants.Motor1ID);
   public TalonFX elevmotor2 = new TalonFX(Constants.ElevatorConstants.Motor2ID);
-  public DigitalInput sensor = new DigitalInput(6);
+  public DigitalInput sensor = new DigitalInput(4);
 
   
       
@@ -161,10 +162,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void setSpeed(double value) {
     if(c_ClimbSubsystem.getAngle() > Constants.ElevatorConstants.ClimbLimit){
       elevmotor1.set(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 1)/3.7);
-      elevmotor2.set(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 1)/3.7);
+      elevmotor2.setControl(new Follower(Constants.ElevatorConstants.Motor1ID, false));
+      //elevmotor2.set(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 1)/3.7);
       }else{
         elevmotor1.set(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 0)/3.7);
-        elevmotor2.set(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 0)/3.7);
+        elevmotor2.setControl(new Follower(Constants.ElevatorConstants.Motor1ID, false));
+        //elevmotor2.set(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 0)/3.7);
       }
     
   }
@@ -181,15 +184,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     if(setPos){
     if(c_ClimbSubsystem.getAngle() > Constants.ElevatorConstants.ClimbLimit){
       elevmotor1.setControl(m_request.withPosition(MathUtil.clamp(value, 0, Constants.ElevatorConstants.ForwardLimit)));
-      elevmotor2.setControl(m_request.withPosition(MathUtil.clamp(value, 0, Constants.ElevatorConstants.ForwardLimit)));
+      elevmotor2.setControl(new Follower(Constants.ElevatorConstants.Motor1ID, false));
+      //elevmotor2.setControl(m_request.withPosition(MathUtil.clamp(value, 0, Constants.ElevatorConstants.ForwardLimit)));
       }
     }else{
        if(c_ClimbSubsystem.getAngle() > Constants.ElevatorConstants.ClimbLimit){
     elevmotor1.setControl(Velocity.withVelocity(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, .1)* Constants.ElevatorConstants.MaxVelocity));
-    elevmotor2.setControl(Velocity.withVelocity(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 1)* Constants.ElevatorConstants.MaxVelocity));
+    elevmotor2.setControl(new Follower(Constants.ElevatorConstants.Motor1ID, false));
+    //elevmotor2.setControl(Velocity.withVelocity(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 1)* Constants.ElevatorConstants.MaxVelocity));
     }else{
       elevmotor1.setControl(Velocity.withVelocity(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 0)* Constants.ElevatorConstants.MaxVelocity));
-      elevmotor2.setControl(Velocity.withVelocity(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 0)* Constants.ElevatorConstants.MaxVelocity));
+      elevmotor2.setControl(new Follower(Constants.ElevatorConstants.Motor1ID, false));
+      //elevmotor2.setControl(Velocity.withVelocity(MathUtil.clamp(MathUtil.applyDeadband(value, 0.05), Constants.ElevatorConstants.MinSpeed, 0)* Constants.ElevatorConstants.MaxVelocity));
     }
       
     }
