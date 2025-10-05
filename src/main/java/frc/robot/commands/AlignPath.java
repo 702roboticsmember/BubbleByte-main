@@ -93,8 +93,8 @@ public class AlignPath extends Command {
     
 
     var interiorWaypoints = new ArrayList<Translation2d>();
-    interiorWaypoints.add(new Translation2d(Units.feetToMeters(14.54), Units.feetToMeters(23.23)));
-    interiorWaypoints.add(new Translation2d(Units.feetToMeters(21.04), Units.feetToMeters(18.23)));
+    //interiorWaypoints.add(new Translation2d(Units.feetToMeters(14.54), Units.feetToMeters(23.23)));
+    //interiorWaypoints.add(new Translation2d(Units.feetToMeters(21.04), Units.feetToMeters(18.23)));
 
     TrajectoryConfig config = new TrajectoryConfig(Units.feetToMeters(12), Units.feetToMeters(12));
     config.setReversed(false);
@@ -116,6 +116,7 @@ public class AlignPath extends Command {
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
+    int Id = s_Swerve.setAlignPoseAdjustedtoLimelight();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

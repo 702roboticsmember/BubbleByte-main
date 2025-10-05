@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -31,7 +32,7 @@ import frc.robot.commands.ClimbPID;
 import frc.robot.commands.ElevatorPID;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.subsystems.BackLimelightSubsystem;
+import frc.robot.subsystems.LimelightSubsystemLeft;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -50,6 +51,7 @@ import frc.robot.subsystems.Swerve;
 public class RobotContainer {
     private final XboxController driver = new XboxController(0);
     private final XboxController codriver = new XboxController(1);
+    public static Pose2d limelightpose = new Pose2d();
 
     
 
@@ -69,12 +71,12 @@ public class RobotContainer {
     
 
     /* CoDriver Buttons */
-    private final JoystickButton algae1ReefIntake = new JoystickButton(codriver, XboxController.Button.kStart.value);
-    private final JoystickButton algae2ReefIntake = new JoystickButton(codriver, XboxController.Button.kBack.value);
+    //private final JoystickButton algae1ReefIntake = new JoystickButton(codriver, XboxController.Button.kStart.value);
+    //private final JoystickButton algae2ReefIntake = new JoystickButton(codriver, XboxController.Button.kBack.value);
     private final JoystickButton climbIn = new JoystickButton(codriver, XboxController.Button.kB.value);
     private final JoystickButton climbOut = new JoystickButton(codriver, XboxController.Button.kA.value);
     private final JoystickButton coralOuttake = new JoystickButton(codriver, XboxController.Button.kX.value);
-    //private final JoystickButton coralIntake = new JoystickButton(codriver, XboxController.Button.kStart.value);
+    private final JoystickButton coralIntake = new JoystickButton(codriver, XboxController.Button.kStart.value);
     private final JoystickButton nest = new JoystickButton(codriver, XboxController.Button.kY.value);
     //private final JoystickButton start = new JoystickButton(codriver, XboxController.Button.kA.value);
     private final JoystickButton algaeGroundIntake = new JoystickButton(codriver, XboxController.Button.kRightBumper.value);
@@ -82,6 +84,7 @@ public class RobotContainer {
     //private final JoystickButton back = new JoystickButton(codriver, XboxController.Button.kB.value);
     private final POVButton alignLeft2 = new POVButton(driver, 270);
     private final POVButton alignRight2 = new POVButton(driver, 90);
+    //private DigitalInput sensor = new DigitalInput(Constants.LIMIT_SWITCH_INTAKE);
 
 
     private final POVButton L1 = new POVButton(codriver, 90);
@@ -102,8 +105,8 @@ public class RobotContainer {
 
     /* Subsystems */
     private final LimelightSubsystemRight l_LimelightSubsystem = new LimelightSubsystemRight();
-    private final BackLimelightSubsystem l_LimelightBackSubsystem = new BackLimelightSubsystem();
-    private final Swerve s_Swerve = new Swerve(l_LimelightBackSubsystem, l_LimelightSubsystem);
+    private final LimelightSubsystemLeft l_LimelightSubsystemLeft = new LimelightSubsystemLeft();
+    private final Swerve s_Swerve = new Swerve(l_LimelightSubsystemLeft, l_LimelightSubsystem);
     private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
     private final CoralIntakeSubsystem c_CoralIntakeSubsystem = new CoralIntakeSubsystem();
     private final ElevatorSubsystem e_ElevatorSubsytem = new ElevatorSubsystem(new ClimbSubsystem(null)); 
@@ -133,13 +136,11 @@ public class RobotContainer {
             turn);        
     }
 
-    // public Command Nest() {
-    //     return new ParallelCommandGroup(
-    //         new AlgaeArmPID(a_AlgaeArmSubsystem, Constants.AlgaeArmConstants.DefaultPose),
-    //         Commands.run(()-> e_ElevatorSubsytem.set(Constants.ElevatorConstants.DefaultPose, true), e_ElevatorSubsytem),
-    //         new ClimbPID(c_ClimbSubsystem, Constants.ClimberConstants.DefaultPose)
-    //     );
-    // }
+    public Command Nest() {
+        return new ParallelCommandGroup(
+            Commands.run(()-> e_ElevatorSubsytem.set(Constants.ElevatorConstants.DefaultPose, true), e_ElevatorSubsytem)
+        );
+    }
     public Command AlignRight_Driver(){
         return new AlignCommand(l_LimelightSubsystem, 
                         Constants.AlignConstants.rightX,
@@ -205,6 +206,12 @@ public class RobotContainer {
     }
     public Command CoralOuttake_coDriver(){
         return c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.OuttakeSpeed);
+    }
+
+    public Command CoralIntake_coDriver(){
+        return new SequentialCommandGroup(c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.OuttakeSpeed).onlyWhile(()->c_CoralIntakeSubsystem.sensor.get()),
+        c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.IntakeSpeedFine).onlyWhile(()->!c_CoralIntakeSubsystem.sensor.get()),
+        c_CoralIntakeSubsystem.run(()->-Constants.CoralIntakeConstants.IntakeSpeedFine).onlyWhile(()->c_CoralIntakeSubsystem.sensor.get()));
     }
 
     public Command CoralOuttake_coDriver(DoubleSupplier speed){
@@ -293,6 +300,11 @@ public class RobotContainer {
         return Commands.run(()-> e_ElevatorSubsytem.set(Constants.ElevatorConstants.L3Pose, true), e_ElevatorSubsytem);
     }
 
+    public void updatePoseLimelight(){
+        
+
+        limelightpose = new Pose2d();
+    }
     
 // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
 
@@ -301,6 +313,7 @@ public class RobotContainer {
 
 
     public RobotContainer() {
+        updatePoseLimelight();
         //Nest();
         
         //Pathfinding.setDynamicObstacles(null, null);
@@ -443,10 +456,11 @@ public class RobotContainer {
 
         /*CoDriver Buttons*/
         
-        //nest.whileTrue(Nest());
+        nest.whileTrue(Nest());
         // climbOut.whileTrue(ClimbOutPID());
         // climbIn.whileTrue(Commands.either(new ClimbPID(c_ClimbSubsystem, Constants.ClimberConstants.InPose), new ClimbPID(c_ClimbSubsystem, Constants.ClimberConstants.InPose), ()-> (e_ElevatorSubsytem.getElevatorHeight() < 5)));
         coralOuttake.whileTrue(CoralOuttake_coDriver());
+        coralIntake.whileTrue(CoralIntake_coDriver());
         //coralIntake.whileTrue(CoralIntake_coDriver(Constants.CoralIntakeConstants.IntakeSpeed));
         
         L1.whileTrue(L1());

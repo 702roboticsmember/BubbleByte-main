@@ -429,6 +429,8 @@ public final class Constants {
         // public static final PersistMode Persist = PersistMode.kNoPersistParameters;
         public static final double IntakeSpeed = 0.36;
         public static final double outtakeTime = 0.5;
+        public static final double IntakeSpeedFine = 0.10;
+        //public static final double IntakeSpeedFine = -0.05;
     }
     
     public static final class AlignConstants{

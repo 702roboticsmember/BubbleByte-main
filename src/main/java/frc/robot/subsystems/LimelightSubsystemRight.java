@@ -30,10 +30,12 @@ public class LimelightSubsystemRight extends SubsystemBase {
   public NetworkTableEntry targetpose_cameraspace;
   public NetworkTableEntry camerapose_targetspace;
   public NetworkTableEntry botpose_orb;
+  public NetworkTableEntry botpose_targetspace;
+  public NetworkTableEntry tid;
 
   /** Creates a new LimelightSubsystem. */
   public LimelightSubsystemRight() {
-    table = NetworkTableInstance.getDefault().getTable("limelight-front");
+    table = NetworkTableInstance.getDefault().getTable("limelight-right");
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     ta = table.getEntry("ta");
@@ -46,12 +48,13 @@ public class LimelightSubsystemRight extends SubsystemBase {
     botpose_wpiblue = table.getEntry("botpose_wpiblue");
     botpose_wpired = table.getEntry("botpose_wpired");
     targetpose_cameraspace = table.getEntry("targetpose_cameraspace");
-    camerapose_targetspace = table.getEntry("targetpose_cameraspace");
+    camerapose_targetspace = table.getEntry("camerapose_targetspace");
     botpose_orb = table.getEntry("botpose_orb");
+    botpose_targetspace = table.getEntry("botpose_targetspace");
 
     NetworkTableInstance.getDefault().getTable("limelight-front").getEntry("imumode_set").setNumber(0);
     
-    
+    tid = table.getEntry("tid");
   }
 
   public double getTargetX() {
@@ -111,6 +114,24 @@ public class LimelightSubsystemRight extends SubsystemBase {
     Pose2d botpose = pose.equals(new double[7]) || !IsTargetAvailable()? null: new Pose2d(pose[0], pose[1], new Rotation2d(pose[5]));
     return botpose;
   }
+
+  /**
+   * 3D transform of the robot in the coordinate system of the primary in-view AprilTag (array (6))
+   * @return Returns a double array of 6 [tx, ty, tz, pitch, yaw, roll] (meters, degrees)
+   */
+  public double[] getBotPose_TargetSpace(){
+    double[] pose = botpose_targetspace.getDoubleArray(new double[6]);
+    return pose;
+  }
+
+  /**
+   * ID of the primary in-view AprilTag
+   * @return double but ID should be an integer if there is no value it will send -1.
+   */
+  public double getTid(){
+    return tid.getDouble(-1);
+  }
+
 
   // public double getBotPoseYTeamRelative() {
   //   double pose[] = RobotContainer.color == Color.kRed ? botpose_wpired.getDoubleArray(new double[6])

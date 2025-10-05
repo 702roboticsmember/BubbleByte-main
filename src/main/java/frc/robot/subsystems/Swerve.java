@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -36,12 +37,12 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] swerveModules;
     public AHRS gyro;
     public  RobotConfig config;
-    public BackLimelightSubsystem l_LimelightBackSubsystem;
-    public LimelightSubsystemRight l_LimelightSubsystem;
+    public LimelightSubsystemLeft l_LimelightSubsystemLeft;
+    public LimelightSubsystemRight l_LimelightSubsystemRight;
 
-    public Swerve(BackLimelightSubsystem l_LimelightBackSubsystem, LimelightSubsystemRight l_LimelightSubsystem) {
-        this.l_LimelightBackSubsystem = l_LimelightBackSubsystem;
-        this.l_LimelightSubsystem = l_LimelightSubsystem;
+    public Swerve(LimelightSubsystemLeft l_LimelightSubsystemLeft, LimelightSubsystemRight l_LimelightSubsystem) {
+        this.l_LimelightSubsystemLeft = l_LimelightSubsystemLeft;
+        this.l_LimelightSubsystemRight = l_LimelightSubsystemRight;
         gyro = new AHRS( NavXComType.kMXP_SPI);
         
         
@@ -168,8 +169,63 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getAlignPose() {
+        
         return AlignOdometry.getPoseMeters();
     }
+
+    /**
+     * 
+     * @param  Id april tag number ID
+     * @return Pose2d of current robot postion based on april tag.
+     */
+    public Pose2d getAlignPoseAdjusted(int Id){
+        int LId = (int)l_LimelightSubsystemLeft.getTid();
+        int RId = (int)l_LimelightSubsystemRight.getTid();
+        double[] RightPose = l_LimelightSubsystemRight.getBotPose_TargetSpace();
+        double[] LeftPose = l_LimelightSubsystemLeft.getBotPose_TargetSpace();
+        Pose2d odometrypose = AlignOdometry.getPoseMeters();
+        if(Id == LId && Id == RId){
+            double x = (odometrypose.getX() + RightPose[0] + LeftPose[0])/3;
+            double y = (odometrypose.getY() + RightPose[2] + LeftPose[2])/3;
+            double yaw = (odometrypose.getRotation().getDegrees() + RightPose[4] + LeftPose[4])/3;
+
+            return new Pose2d(x, y, new Rotation2d(yaw));
+
+        }else if(Id == LId){
+            double x = (odometrypose.getX() + LeftPose[0])/2;
+            double y = (odometrypose.getY() + LeftPose[2])/2;
+            double yaw = (odometrypose.getRotation().getDegrees() + LeftPose[4])/2;
+            return new Pose2d(x, y, new Rotation2d(yaw));
+        }else if(Id == RId){
+            double x = (odometrypose.getX() + RightPose[0])/2;
+            double y = (odometrypose.getY() + RightPose[2])/2;
+            double yaw = (odometrypose.getRotation().getDegrees() + RightPose[4])/2;
+            return new Pose2d(x, y, new Rotation2d(yaw));
+        }else{
+            return odometrypose;
+        }
+    }
+
+
+    public int setAlignPoseAdjustedtoLimelight(){
+        int Id = (int)l_LimelightSubsystemLeft.getTid();
+        int RId = (int)l_LimelightSubsystemRight.getTid();
+        double[] RightPose = l_LimelightSubsystemRight.getBotPose_TargetSpace();
+        double[] LeftPose = l_LimelightSubsystemLeft.getBotPose_TargetSpace();
+        if(Id == RId){
+            double x = (LeftPose[0] + RightPose[0])/2;
+            double y = (LeftPose[0] + RightPose[2])/2;
+            double yaw = (LeftPose[0] + RightPose[4])/2;
+            AlignOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(x, y, new Rotation2d(yaw)));
+        }else{
+            double x = LeftPose[0];
+            double y = LeftPose[0];
+            double yaw = LeftPose[0];
+            AlignOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(x, y, new Rotation2d(yaw)));
+        }
+        return Id;
+    }
+
 
     public void setPose(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
@@ -284,8 +340,8 @@ public class Swerve extends SubsystemBase {
     }
 
     public void updatePoseLimelight(){
-        Pose2d poseb = l_LimelightBackSubsystem.getBotPose2d();
-        Pose2d posef = l_LimelightSubsystem.getBotPose2d();
+        Pose2d poseb = l_LimelightSubsystemRight.getBotPose2d();
+        Pose2d posef = l_LimelightSubsystemLeft.getBotPose2d();
         
         SmartDashboard.putBoolean("Limelight poseUpF", false);
         if(posef == null){
@@ -316,6 +372,7 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         swerveOdometry.update(getGyroYaw(), getModulePositions());
+        AlignOdometry.update(getGyroYaw(), getModulePositions());
         //updatePoseLimelight();
         
         SmartDashboard.putNumber("Acc",this.getAcc());

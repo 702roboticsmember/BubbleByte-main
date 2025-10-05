@@ -24,7 +24,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
   // private Spark LeftMotor = new Spark(Constants.CoralIntakeConstants.LeftMotorID);
   // private Spark RightMotor = new Spark(Constants.CoralIntakeConstants.RightMotorID);
   private TalonFX Motor = new TalonFX(Constants.CoralIntakeConstants.MotorID);
-  private DigitalInput sensor = new DigitalInput(Constants.LIMIT_SWITCH_INTAKE);
+  public static DigitalInput sensor = new DigitalInput(Constants.LIMIT_SWITCH_INTAKE);
   
   /** Creates a new ClimbSubsystem. */
   public CoralIntakeSubsystem() {
