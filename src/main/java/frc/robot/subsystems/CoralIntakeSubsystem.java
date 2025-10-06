@@ -24,10 +24,11 @@ public class CoralIntakeSubsystem extends SubsystemBase {
   // private Spark LeftMotor = new Spark(Constants.CoralIntakeConstants.LeftMotorID);
   // private Spark RightMotor = new Spark(Constants.CoralIntakeConstants.RightMotorID);
   private TalonFX Motor = new TalonFX(Constants.CoralIntakeConstants.MotorID);
-  public static DigitalInput sensor = new DigitalInput(Constants.LIMIT_SWITCH_INTAKE);
+  public DigitalInput sensor;
   
   /** Creates a new ClimbSubsystem. */
-  public CoralIntakeSubsystem() {
+  public CoralIntakeSubsystem(DigitalInput sensor) {
+    this.sensor = sensor;
     // SparkMaxConfig leftConfig = new SparkMaxConfig();
     // SparkMaxConfig rightConfig = new SparkMaxConfig();
     
@@ -104,6 +105,10 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
   public void setSpeed(double speed) {
     Motor.set(speed);
+  }
+
+  public double getPosition(){
+    return Motor.getPosition().getValueAsDouble();
   }
 
   public Command run(DoubleSupplier input){

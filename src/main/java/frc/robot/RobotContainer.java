@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.AlignCommand;
 import frc.robot.commands.AutoFollowCommand;
 import frc.robot.commands.ClimbPID;
+import frc.robot.commands.CoralPID;
 import frc.robot.commands.ElevatorPID;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.TeleopSwerve;
@@ -99,7 +100,7 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser;
     private final SendableChooser<Command> teamChooser;
-  
+    public DigitalInput sensor = new DigitalInput(Constants.LIMIT_SWITCH_INTAKE);
 
     //private static final Orchestra orchestra = new Orchestra("mario.chrp");
 
@@ -108,7 +109,7 @@ public class RobotContainer {
     private final LimelightSubsystemLeft l_LimelightSubsystemLeft = new LimelightSubsystemLeft();
     private final Swerve s_Swerve = new Swerve(l_LimelightSubsystemLeft, l_LimelightSubsystem);
     private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
-    private final CoralIntakeSubsystem c_CoralIntakeSubsystem = new CoralIntakeSubsystem();
+    private final CoralIntakeSubsystem c_CoralIntakeSubsystem = new CoralIntakeSubsystem(sensor);
     private final ElevatorSubsystem e_ElevatorSubsytem = new ElevatorSubsystem(new ClimbSubsystem(null)); 
     private final ClimbSubsystem c_ClimbSubsystem = new ClimbSubsystem(e_ElevatorSubsytem);
     public static Field2d field = new Field2d();
@@ -138,7 +139,8 @@ public class RobotContainer {
 
     public Command Nest() {
         return new ParallelCommandGroup(
-            Commands.run(()-> e_ElevatorSubsytem.set(Constants.ElevatorConstants.DefaultPose, true), e_ElevatorSubsytem)
+            Commands.run(()-> e_ElevatorSubsytem.set(Constants.ElevatorConstants.DefaultPose, true), e_ElevatorSubsytem),
+            new ClimbPID(c_ClimbSubsystem, Constants.ClimberConstants.DefaultPose)
         );
     }
     public Command AlignRight_Driver(){
@@ -209,9 +211,9 @@ public class RobotContainer {
     }
 
     public Command CoralIntake_coDriver(){
-        return new SequentialCommandGroup(c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.OuttakeSpeed).onlyWhile(()->c_CoralIntakeSubsystem.sensor.get()),
-        c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.IntakeSpeedFine).onlyWhile(()->!c_CoralIntakeSubsystem.sensor.get()),
-        c_CoralIntakeSubsystem.run(()->-Constants.CoralIntakeConstants.IntakeSpeedFine).onlyWhile(()->c_CoralIntakeSubsystem.sensor.get()));
+        return Commands.sequence(c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.OuttakeSpeed).withDeadline(Commands.waitUntil(()-> sensor.get())),
+        c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.IntakeSpeedFine).withDeadline(Commands.waitUntil(()-> !sensor.get())),
+        c_CoralIntakeSubsystem.run(()->-Constants.CoralIntakeConstants.IntakeSpeedFine)).withDeadline(Commands.waitUntil(()-> sensor.get()));
     }
 
     public Command CoralOuttake_coDriver(DoubleSupplier speed){
@@ -314,7 +316,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         updatePoseLimelight();
-        //Nest();
+        Nest();
         
         //Pathfinding.setDynamicObstacles(null, null);
         //beamLED.set(true);
@@ -387,7 +389,7 @@ public class RobotContainer {
         //c_CoralIntakeSubsystem.setDefaultCommand(a_AlgaeIntakeSubsystem.run(()-> codriver.getRawAxis(2)));
         e_ElevatorSubsytem.setDefaultCommand(e_ElevatorSubsytem.run((()-> -codriver.getRawAxis(5) )));
         l_LEDSubsystem.setDefaultCommand(new InstantCommand(()->l_LEDSubsystem.DoTheRainbow(false), l_LEDSubsystem));
-
+        c_CoralIntakeSubsystem.setDefaultCommand(new CoralPID(c_CoralIntakeSubsystem, 0));
         
         l_LEDSubsystem.setDefaultCommand(new InstantCommand(() -> {
         l_LEDSubsystem.setColor(Color.kYellow);
@@ -461,6 +463,7 @@ public class RobotContainer {
         // climbIn.whileTrue(Commands.either(new ClimbPID(c_ClimbSubsystem, Constants.ClimberConstants.InPose), new ClimbPID(c_ClimbSubsystem, Constants.ClimberConstants.InPose), ()-> (e_ElevatorSubsytem.getElevatorHeight() < 5)));
         coralOuttake.whileTrue(CoralOuttake_coDriver());
         coralIntake.whileTrue(CoralIntake_coDriver());
+        
         //coralIntake.whileTrue(CoralIntake_coDriver(Constants.CoralIntakeConstants.IntakeSpeed));
         
         L1.whileTrue(L1());

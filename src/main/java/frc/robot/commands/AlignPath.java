@@ -49,11 +49,6 @@ public class AlignPath extends Command {
       Constants.AutoFollowConstants.kD);
   
   
-  // DoubleSupplier TX;
-  // DoubleSupplier TZ;
-  // DoubleSupplier RY;
-  // BooleanSupplier tv;
-  // DoubleSupplier tx;
    Swerve s_Swerve;
    LimelightSubsystemRight l_LimelightSubsystem;
   // Rotation2d headingprev;
@@ -61,7 +56,6 @@ public class AlignPath extends Command {
   // final double z;
   // final double ry;
   final LTVUnicycleController controller = new LTVUnicycleController(VecBuilder.fill(0.0625, 0.125, 2.0), VecBuilder.fill(1.0, 2.0), 0.02, 9);
-  
   /* 
   Pose2d Start = new Pose2d(Units.feetToMeters(1.54), Units.feetToMeters(23.23),
   Rotation2d.fromDegrees(-180));
@@ -81,6 +75,8 @@ public class AlignPath extends Command {
 
   double distanceToEnd;
   
+  int Id;
+  
   /** Creates a new AutoAim. */
   public AlignPath(LimelightSubsystemRight l_LimelightSubsystem, Pose2d Start, Pose2d End, Swerve s_Swerve) {
     
@@ -91,9 +87,10 @@ public class AlignPath extends Command {
     RobotContainer.robotCentric = false;
     
     
+    
 
     var interiorWaypoints = new ArrayList<Translation2d>();
-    //interiorWaypoints.add(new Translation2d(Units.feetToMeters(14.54), Units.feetToMeters(23.23)));
+    interiorWaypoints.add(new Translation2d(End.getX() + Constants.AlignConstants.XOffset,End.getY() + Constants.AlignConstants.YOffset));
     //interiorWaypoints.add(new Translation2d(Units.feetToMeters(21.04), Units.feetToMeters(18.23)));
 
     TrajectoryConfig config = new TrajectoryConfig(Units.feetToMeters(12), Units.feetToMeters(12));
@@ -105,8 +102,6 @@ public class AlignPath extends Command {
         End,
         config);
     
-    
-
     addRequirements(s_Swerve);
     
   }
@@ -116,7 +111,7 @@ public class AlignPath extends Command {
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
-    int Id = s_Swerve.setAlignPoseAdjustedtoLimelight();
+    Id = s_Swerve.setAlignPoseAdjustedtoLimelight();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -126,7 +121,7 @@ public class AlignPath extends Command {
     
 
     Trajectory.State reference = trajectory.sample(currentTime); // sample the trajectory at 3.4 seconds from the beginning
-  ChassisSpeeds adjustedSpeeds = controller.calculate(s_Swerve.getAlignPose(), reference);
+  ChassisSpeeds adjustedSpeeds = controller.calculate(s_Swerve.getAlignPoseAdjusted(Id), reference);
     s_Swerve.move(adjustedSpeeds, false);
     double duration = trajectory.getTotalTimeSeconds();
     double Tx =  l_LimelightSubsystem.getCameraPos(0);

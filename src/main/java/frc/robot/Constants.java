@@ -430,6 +430,10 @@ public final class Constants {
         public static final double IntakeSpeed = 0.36;
         public static final double outtakeTime = 0.5;
         public static final double IntakeSpeedFine = 0.10;
+        public static final double kP = 0.05;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+
         //public static final double IntakeSpeedFine = -0.05;
     }
     
@@ -445,6 +449,12 @@ public final class Constants {
         public static double centerRY = 1;
         public static double centerTX = 0.0;
         public static double centerTZ = 0.52;
+
+        //interior Waypoints offset from Reef
+        public static double XOffset = Units.feetToMeters(0);
+        public static double YOffset = Units.feetToMeters(3);
+
+
     }
 
 
