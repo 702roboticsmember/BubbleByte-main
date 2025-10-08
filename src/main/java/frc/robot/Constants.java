@@ -369,8 +369,8 @@ public final class Constants {
         public static final double ConversionConstant = 0.0;
         public static final InvertedValue MotorInverted = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue MotorMode = NeutralModeValue.Brake;
-        public static final int STATOR_CURRENT_LIMIT = 80;
-        public static final int CURRENT_LIMIT = 70;
+        public static final int STATOR_CURRENT_LIMIT = 60;
+        public static final int CURRENT_LIMIT = 50;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
         public static final int CURRENT_THRESHOLD = 30;
@@ -385,7 +385,7 @@ public final class Constants {
         public static final double kG = 1.07;
         public static final GravityTypeValue GravityType = GravityTypeValue.Elevator_Static;
         public static final double MaxVelocity = 100;
-        public static final double MaxAcceleration = 250;
+        public static final double MaxAcceleration = 200;
 
         public static final double Tolerance = 0.2;
         public static final boolean LimitEnable = true;
@@ -430,7 +430,7 @@ public final class Constants {
         public static final double IntakeSpeed = 0.36;
         public static final double outtakeTime = 0.5;
         public static final double IntakeSpeedFine = 0.10;
-        public static final double kP = 0.05;
+        public static final double kP = 0.2;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 

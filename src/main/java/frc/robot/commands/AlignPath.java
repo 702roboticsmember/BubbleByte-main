@@ -78,7 +78,7 @@ public class AlignPath extends Command {
   int Id;
   
   /** Creates a new AutoAim. */
-  public AlignPath(LimelightSubsystemRight l_LimelightSubsystem, Pose2d Start, Pose2d End, Swerve s_Swerve) {
+  public AlignPath( Pose2d Start, Pose2d End, Swerve s_Swerve) {
     
     this.s_Swerve = s_Swerve;
     this.l_LimelightSubsystem = l_LimelightSubsystem;

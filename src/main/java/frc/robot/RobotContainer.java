@@ -315,8 +315,8 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        updatePoseLimelight();
-        Nest();
+        //updatePoseLimelight();
+        //Nest();
         
         //Pathfinding.setDynamicObstacles(null, null);
         //beamLED.set(true);
@@ -389,7 +389,7 @@ public class RobotContainer {
         //c_CoralIntakeSubsystem.setDefaultCommand(a_AlgaeIntakeSubsystem.run(()-> codriver.getRawAxis(2)));
         e_ElevatorSubsytem.setDefaultCommand(e_ElevatorSubsytem.run((()-> -codriver.getRawAxis(5) )));
         l_LEDSubsystem.setDefaultCommand(new InstantCommand(()->l_LEDSubsystem.DoTheRainbow(false), l_LEDSubsystem));
-        c_CoralIntakeSubsystem.setDefaultCommand(new CoralPID(c_CoralIntakeSubsystem, 0));
+        c_CoralIntakeSubsystem.setDefaultCommand(new CoralPID(c_CoralIntakeSubsystem));
         
         l_LEDSubsystem.setDefaultCommand(new InstantCommand(() -> {
         l_LEDSubsystem.setColor(Color.kYellow);

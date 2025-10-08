@@ -223,7 +223,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    elevmotor2.setPosition(elevmotor1.getPosition().getValueAsDouble());
+    //elevmotor2.setPosition(elevmotor1.getPosition().getValueAsDouble());
     if(!sensor.get())elevmotor1.setPosition(0);
     SmartDashboard.putBoolean("sensor", sensor.get());
     SmartDashboard.putNumber("Elevator Height", getElevatorHeight());
