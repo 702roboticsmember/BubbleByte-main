@@ -243,7 +243,7 @@ public final class Constants {
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
 
-        public static final double ForwardLimit = 70;
+        public static final double ForwardLimit = 80;
 
         public static final boolean LimitEnable = true;
 
@@ -252,9 +252,9 @@ public final class Constants {
         public static final double DefaultPose = 0;
 
 
-        public static final double OutPose = 100;
+        public static final double OutPose = 90;
 
-        public static final double InPose = -120;
+        public static final double InPose = -90;
 
         public static final double GearRatio = 1/338.5;
 
@@ -391,10 +391,11 @@ public final class Constants {
         public static final boolean LimitEnable = true;
         public static final double ForwardLimit = 29.5;
         public static final double ReverseLimit = 0.5;
-        public static final double DefaultPose = 0.0;
+        public static final double DefaultPose = 1.6;
+        
         public static final double L1Pose = 5.5;
-        public static final double L2Pose = 13.55;
-        public static final double L3Pose = 20.35;
+        public static final double L2Pose = 11;
+        public static final double L3Pose = 18.2;
         public static final double L4Pose = 27.2;
         public static final double GearRatio = 1;//6.88:1
         public static final double StallSpeed = 0.34;
@@ -440,15 +441,15 @@ public final class Constants {
     public static final class AlignConstants{
 
         public static final double rightRY = 2;
-        public static final double rightX = -0.155;
-        public static final double rightZ = .52;
+        public static final double rightX = 0.155;
+        public static final double rightZ = -.44;
 
-        public static final double leftRY = 0;
-        public static final double leftX = 0.195;
-        public static final double leftZ = 0.52;
+        public static final double leftRY = 12;
+        public static final double leftX = 0.1;
+        public static final double leftZ = -0.20;
         public static double centerRY = 1;
         public static double centerTX = 0.0;
-        public static double centerTZ = 0.52;
+        public static double centerTZ = -0.52;
 
         //interior Waypoints offset from Reef
         public static double XOffset = Units.feetToMeters(0);

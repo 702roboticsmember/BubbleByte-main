@@ -5,7 +5,11 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -40,7 +44,7 @@ public class Swerve extends SubsystemBase {
     public LimelightSubsystemLeft l_LimelightSubsystemLeft;
     public LimelightSubsystemRight l_LimelightSubsystemRight;
 
-    public Swerve(LimelightSubsystemLeft l_LimelightSubsystemLeft, LimelightSubsystemRight l_LimelightSubsystem) {
+    public Swerve(LimelightSubsystemLeft l_LimelightSubsystemLeft, LimelightSubsystemRight l_LimelightSubsystemRight) {
         this.l_LimelightSubsystemLeft = l_LimelightSubsystemLeft;
         this.l_LimelightSubsystemRight = l_LimelightSubsystemRight;
         gyro = new AHRS( NavXComType.kMXP_SPI);
@@ -89,7 +93,27 @@ public class Swerve extends SubsystemBase {
           );
     }
 
-    private void driveRobotRelative(ChassisSpeeds speeds) {
+    public Command followPathPlanner(PathPlannerPath path){
+        SmartDashboard.putBoolean("iscalled", true);
+        return new FollowPathCommand(
+                path,
+                this::getAlignPose, // Robot pose supplier
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND feedforwards
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                ),
+                config, // The robot configuration
+                () -> false,
+                this);
+    
+  
+    }
+
+    //AutoBuilder.
+
+    public void driveRobotRelative(ChassisSpeeds speeds) {
         var swerveModuleStates = Constants.Swerve.KINEMATICS.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(
                 swerveModuleStates, Constants.Swerve.MAX_SPEED);
@@ -99,7 +123,7 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    private ChassisSpeeds getRobotRelativeSpeeds() {
+    public ChassisSpeeds getRobotRelativeSpeeds() {
         return Constants.Swerve.KINEMATICS.toChassisSpeeds(getModuleStates());
     }
 
@@ -129,8 +153,11 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    public void move(ChassisSpeeds chassisSpeedsspeed, boolean isOpenLoop) {
-        SwerveModuleState[] swerveModuleStates = Constants.Swerve.KINEMATICS.toSwerveModuleStates(chassisSpeedsspeed);
+    public void move(ChassisSpeeds chassisSpeeds, double rotation, boolean isOpenLoop) {
+        SwerveModuleState[] swerveModuleStates = Constants.Swerve.KINEMATICS.toSwerveModuleStates(new ChassisSpeeds(
+            chassisSpeeds.vxMetersPerSecond,
+            chassisSpeeds.vyMetersPerSecond,
+            rotation));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.MAX_SPEED);
 
         for (SwerveModule mod : swerveModules) {
@@ -185,20 +212,20 @@ public class Swerve extends SubsystemBase {
         double[] LeftPose = l_LimelightSubsystemLeft.getBotPose_TargetSpace();
         Pose2d odometrypose = AlignOdometry.getPoseMeters();
         if(Id == LId && Id == RId){
-            double x = (odometrypose.getX() + RightPose[0] + LeftPose[0])/3;
-            double y = (odometrypose.getY() + RightPose[2] + LeftPose[2])/3;
+            double x = (odometrypose.getX() + RightPose[2] + LeftPose[2])/3;
+            double y = (odometrypose.getY() + RightPose[0] + LeftPose[0])/3;
             double yaw = (odometrypose.getRotation().getDegrees() + RightPose[4] + LeftPose[4])/3;
 
             return new Pose2d(x, y, new Rotation2d(yaw));
 
         }else if(Id == LId){
-            double x = (odometrypose.getX() + LeftPose[0])/2;
-            double y = (odometrypose.getY() + LeftPose[2])/2;
+            double x = (odometrypose.getX() + LeftPose[2])/2;
+            double y = (odometrypose.getY() + LeftPose[0])/2;
             double yaw = (odometrypose.getRotation().getDegrees() + LeftPose[4])/2;
             return new Pose2d(x, y, new Rotation2d(yaw));
         }else if(Id == RId){
-            double x = (odometrypose.getX() + RightPose[0])/2;
-            double y = (odometrypose.getY() + RightPose[2])/2;
+            double x = (odometrypose.getX() + RightPose[2])/2;
+            double y = (odometrypose.getY() + RightPose[0])/2;
             double yaw = (odometrypose.getRotation().getDegrees() + RightPose[4])/2;
             return new Pose2d(x, y, new Rotation2d(yaw));
         }else{
@@ -213,14 +240,14 @@ public class Swerve extends SubsystemBase {
         double[] RightPose = l_LimelightSubsystemRight.getBotPose_TargetSpace();
         double[] LeftPose = l_LimelightSubsystemLeft.getBotPose_TargetSpace();
         if(Id == RId){
-            double x = (LeftPose[0] + RightPose[0])/2;
-            double y = (LeftPose[0] + RightPose[2])/2;
-            double yaw = (LeftPose[0] + RightPose[4])/2;
+            double x = (LeftPose[2] + RightPose[2])/2;
+            double y = (LeftPose[0] + RightPose[0])/2;
+            double yaw = (LeftPose[4] + RightPose[4])/2;
             AlignOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(x, y, new Rotation2d(yaw)));
         }else{
-            double x = LeftPose[0];
+            double x = LeftPose[2];
             double y = LeftPose[0];
-            double yaw = LeftPose[0];
+            double yaw = LeftPose[4];
             AlignOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(x, y, new Rotation2d(yaw)));
         }
         return Id;
@@ -233,6 +260,7 @@ public class Swerve extends SubsystemBase {
 
     public void setAlignPose(Pose2d pose) {
         AlignOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
+        
     }
 
     public Rotation2d getHeading() {

@@ -18,7 +18,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.LimelightSubsystemRight;
 import frc.robot.subsystems.Swerve;
 
-public class AlignCommand extends Command {
+public class AlignCommandLeft extends Command {
   boolean interrupted;
 
   private PIDController TranslatePID = new PIDController(
@@ -44,7 +44,7 @@ public class AlignCommand extends Command {
   BooleanSupplier tv;
   DoubleSupplier tx;
   Swerve s_Swerve;
-  LimelightSubsystem l_LimelightSubsystem;
+  LimelightSubsystemRight l_LimelightSubsystem;
   Rotation2d headingprev;
   final double x;
   final double z;
@@ -52,7 +52,7 @@ public class AlignCommand extends Command {
   
 
   /** Creates a new AutoAim. */
-  public AlignCommand(LimelightSubsystem l_LimelightSubsystem2, double x, double z, double ry, Swerve s_Swerve) {
+  public AlignCommandLeft(LimelightSubsystemRight l_LimelightSubsystem2, double x, double z, double ry, Swerve s_Swerve) {
     this.TX = ()-> l_LimelightSubsystem2.getTargetPos(0);
     this.TZ = ()-> l_LimelightSubsystem2.getTargetPos(2);
     this.RY = ()-> l_LimelightSubsystem2.getTargetPos(4);

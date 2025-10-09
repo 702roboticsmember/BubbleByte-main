@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class LimelightSubsystemLeft extends SubsystemBase {
+public class LimelightSubsystem extends SubsystemBase {
   public NetworkTable table;
   public NetworkTableEntry tx;
   public NetworkTableEntry ty;
@@ -30,12 +30,30 @@ public class LimelightSubsystemLeft extends SubsystemBase {
   public NetworkTableEntry targetpose_cameraspace;
   public NetworkTableEntry camerapose_targetspace;
   public NetworkTableEntry botpose_orb;
-  public NetworkTableEntry  botpose_targetspace;
-  public NetworkTableEntry  tid;
+  public NetworkTableEntry botpose_targetspace;
+  public NetworkTableEntry tid;
+
+  public NetworkTable righttable;
+  public NetworkTableEntry righttx;
+  public NetworkTableEntry rightty;
+  public NetworkTableEntry righttv;
+  public NetworkTableEntry rightta;
+  public NetworkTableEntry rightpipeline;
+  public NetworkTableEntry rightgetpipe;
+  public NetworkTableEntry righttclass;
+  public NetworkTableEntry rightbotpose_wpiblue;
+  public NetworkTableEntry rightbotpose_wpired;
+  public NetworkTableEntry rightbotpose;
+  public NetworkTableEntry rightcamMode;
+  public NetworkTableEntry righttargetpose_cameraspace;
+  public NetworkTableEntry rightcamerapose_targetspace;
+  public NetworkTableEntry rightbotpose_orb;
+  public NetworkTableEntry rightbotpose_targetspace;
+  public NetworkTableEntry righttid;
 
   /** Creates a new LimelightSubsystem. */
-  public LimelightSubsystemLeft() {
-    table = NetworkTableInstance.getDefault().getTable("limelight-left");
+  public LimelightSubsystem() {
+    table = NetworkTableInstance.getDefault().getTable("limelight-front");
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     ta = table.getEntry("ta");
@@ -48,14 +66,30 @@ public class LimelightSubsystemLeft extends SubsystemBase {
     botpose_wpiblue = table.getEntry("botpose_wpiblue");
     botpose_wpired = table.getEntry("botpose_wpired");
     targetpose_cameraspace = table.getEntry("targetpose_cameraspace");
-    camerapose_targetspace = table.getEntry("targetpose_cameraspace");
+    camerapose_targetspace = table.getEntry("camerapose_targetspace");
     botpose_orb = table.getEntry("botpose_orb");
     botpose_targetspace = table.getEntry("botpose_targetspace");
-    tid = table.getEntry("tid");
 
-    NetworkTableInstance.getDefault().getTable("limelight-left").getEntry("imumode_set").setNumber(0);
+    righttable = NetworkTableInstance.getDefault().getTable("limelight-front");
+    righttx = righttable.getEntry("tx");
+    rightty = righttable.getEntry("ty");
+    rightta = righttable.getEntry("ta");
+    righttv = righttable.getEntry("tv");
+    rightpipeline = righttable.getEntry("pipeline");
+    rightgetpipe = righttable.getEntry("getpipe");
+    righttclass = righttable.getEntry("tclass");
+    rightcamMode = righttable.getEntry("camMode");
+    rightbotpose = righttable.getEntry("botpose");
+    rightbotpose_wpiblue = righttable.getEntry("botpose_wpiblue");
+    rightbotpose_wpired = righttable.getEntry("botpose_wpired");
+    righttargetpose_cameraspace = righttable.getEntry("targetpose_cameraspace");
+    rightcamerapose_targetspace = righttable.getEntry("camerapose_targetspace");
+    rightbotpose_orb = righttable.getEntry("botpose_orb");
+    rightbotpose_targetspace = righttable.getEntry("botpose_targetspace");
+
+    NetworkTableInstance.getDefault().getTable("limelight-front").getEntry("imumode_set").setNumber(0);
     
-    
+    tid = table.getEntry("tid");
   }
 
   public double getTargetX() {
@@ -115,19 +149,7 @@ public class LimelightSubsystemLeft extends SubsystemBase {
     Pose2d botpose = pose.equals(new double[7]) || !IsTargetAvailable()? null: new Pose2d(pose[0], pose[1], new Rotation2d(pose[5]));
     return botpose;
   }
-  /**
-   * ID of the primary in-view AprilTag
-   * @return double but ID should be an integer if there is no value it will send -1.
-   */
-  public double getTid(){
-    return tid.getDouble(-1);
-  }
 
-  // public double getBotPoseYTeamRelative() {
-  //   double pose[] = RobotContainer.color == Color.kRed ? botpose_wpired.getDoubleArray(new double[6])
-  //       : botpose_wpiblue.getDoubleArray(new double[6]);
-  //   return pose[1];
-  // }
   /**
    * 3D transform of the robot in the coordinate system of the primary in-view AprilTag (array (6))
    * @return Returns a double array of 6 [tx, ty, tz, pitch, yaw, roll] (meters, degrees)
@@ -136,10 +158,27 @@ public class LimelightSubsystemLeft extends SubsystemBase {
     double[] pose = botpose_targetspace.getDoubleArray(new double[6]);
     return pose;
   }
+
+  /**
+   * ID of the primary in-view AprilTag
+   * @return double but ID should be an integer if there is no value it will send -1.
+   */
+  public double getTid(){
+    return tid.getDouble(-1);
+  }
+
+
+  // public double getBotPoseYTeamRelative() {
+  //   double pose[] = RobotContainer.color == Color.kRed ? botpose_wpired.getDoubleArray(new double[6])
+  //       : botpose_wpiblue.getDoubleArray(new double[6]);
+  //   return pose[1];
+  // }
+
   
 
   public double getTargetPos(int value){
     double pos[] = targetpose_cameraspace.getDoubleArray(new double[6]);
+    //double posR[] = targetpose_cameraspace.getDoubleArray(new double[6]);
     return pos[value];
   }
 

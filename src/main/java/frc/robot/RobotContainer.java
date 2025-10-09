@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,17 +28,21 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.AlignCommand;
+import frc.robot.commands.AlignCommandLeft;
+import frc.robot.commands.AlignPath;
 import frc.robot.commands.AutoFollowCommand;
 import frc.robot.commands.ClimbPID;
 import frc.robot.commands.CoralPID;
 import frc.robot.commands.ElevatorPID;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.Tes;
 import frc.robot.subsystems.LimelightSubsystemLeft;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.LimelightSubsystemRight;
 import frc.robot.subsystems.Swerve;
 /**
@@ -105,9 +110,10 @@ public class RobotContainer {
     //private static final Orchestra orchestra = new Orchestra("mario.chrp");
 
     /* Subsystems */
-    private final LimelightSubsystemRight l_LimelightSubsystem = new LimelightSubsystemRight();
+    private final LimelightSubsystemRight l_LimelightSubsystemRight = new LimelightSubsystemRight();
+    private final LimelightSubsystem l_LimelightSubsystem = new LimelightSubsystem();
     private final LimelightSubsystemLeft l_LimelightSubsystemLeft = new LimelightSubsystemLeft();
-    private final Swerve s_Swerve = new Swerve(l_LimelightSubsystemLeft, l_LimelightSubsystem);
+    private final Swerve s_Swerve = new Swerve(l_LimelightSubsystemLeft, l_LimelightSubsystemRight);
     private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
     private final CoralIntakeSubsystem c_CoralIntakeSubsystem = new CoralIntakeSubsystem(sensor);
     private final ElevatorSubsystem e_ElevatorSubsytem = new ElevatorSubsystem(new ClimbSubsystem(null)); 
@@ -151,15 +157,16 @@ public class RobotContainer {
                         s_Swerve); 
                     }
     public Command AlignLeft_Driver(){
-        return new AlignCommand(l_LimelightSubsystem, 
+        return new AlignCommandLeft(l_LimelightSubsystemRight, 
                         Constants.AlignConstants.leftX,
                         Constants.AlignConstants.leftZ, 
                         Constants.AlignConstants.leftRY, 
                         s_Swerve); 
+        //return new Tes(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0.5, 0.5, new Rotation2d(0)), s_Swerve);
     }
 
     public Command AlignLeft_Driver2(){
-        return new AlignCommand(l_LimelightSubsystem, 
+        return new AlignCommandLeft(l_LimelightSubsystemRight, 
                         Constants.AlignConstants.leftX - 0.01,
                         Constants.AlignConstants.leftZ, 
                         Constants.AlignConstants.leftRY, 
@@ -182,7 +189,7 @@ public class RobotContainer {
                         s_Swerve); 
                     }
     public Command AlignLeftOffset_Driver(double xoff, double zoff, double ryoff){
-        return new AlignCommand(l_LimelightSubsystem, 
+        return new AlignCommandLeft(l_LimelightSubsystemRight, 
                         Constants.AlignConstants.leftX + xoff,
                         Constants.AlignConstants.leftZ + zoff, 
                         Constants.AlignConstants.leftRY + ryoff, 
@@ -211,9 +218,10 @@ public class RobotContainer {
     }
 
     public Command CoralIntake_coDriver(){
-        return Commands.sequence(c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.OuttakeSpeed).withDeadline(Commands.waitUntil(()-> sensor.get())),
-        c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.IntakeSpeedFine).withDeadline(Commands.waitUntil(()-> !sensor.get())),
-        c_CoralIntakeSubsystem.run(()->-Constants.CoralIntakeConstants.IntakeSpeedFine)).withDeadline(Commands.waitUntil(()-> sensor.get()));
+        return Commands.sequence(c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.OuttakeSpeed).onlyWhile(()-> sensor.get()), 
+        c_CoralIntakeSubsystem.run(()->Constants.CoralIntakeConstants.OuttakeSpeed).onlyWhile(()-> !sensor.get()),
+        
+        new CoralPID(c_CoralIntakeSubsystem, 10));
     }
 
     public Command CoralOuttake_coDriver(DoubleSupplier speed){
@@ -241,7 +249,7 @@ public class RobotContainer {
     }
 
     public Command LimitSwitchDeadline(){
-        return Commands.waitUntil(()-> !c_CoralIntakeSubsystem.getSensor());
+        return CoralIntake_coDriver();
     }
 
     public Command L4Deadline(){

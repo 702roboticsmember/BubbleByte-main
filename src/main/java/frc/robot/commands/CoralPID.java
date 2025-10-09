@@ -22,6 +22,7 @@ public class CoralPID extends Command {
   public CoralIntakeSubsystem c_CoralIntakeSubsystem;
   public boolean stay;
   public double setpoint;
+  public double set;
   /** Creates a new CoralPID. will keep current position*/
   public CoralPID(CoralIntakeSubsystem c_CoralIntakeSubsystem) {
     this.c_CoralIntakeSubsystem = c_CoralIntakeSubsystem;
@@ -36,7 +37,7 @@ public class CoralPID extends Command {
   public CoralPID(CoralIntakeSubsystem c_CoralIntakeSubsystem, double stepoint){
     this.c_CoralIntakeSubsystem = c_CoralIntakeSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.setpoint = setpoint;
+    this.set = setpoint;
     this.stay = false;
     addRequirements(c_CoralIntakeSubsystem);
   }
@@ -46,6 +47,8 @@ public class CoralPID extends Command {
   public void initialize() {
     if(stay){
       setpoint = c_CoralIntakeSubsystem.getPosition();
+    }else{
+      setpoint = c_CoralIntakeSubsystem.getPosition() + set;
     }
 
     coralPID.setSetpoint(setpoint);

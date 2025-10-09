@@ -52,7 +52,7 @@ public class LimelightSubsystemRight extends SubsystemBase {
     botpose_orb = table.getEntry("botpose_orb");
     botpose_targetspace = table.getEntry("botpose_targetspace");
 
-    NetworkTableInstance.getDefault().getTable("limelight-front").getEntry("imumode_set").setNumber(0);
+    NetworkTableInstance.getDefault().getTable("limelight-right").getEntry("imumode_set").setNumber(0);
     
     tid = table.getEntry("tid");
   }
